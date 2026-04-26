@@ -6,24 +6,13 @@
 
 Version |release|
 """
-
 boxRoot = None
 
-
 def bindArrows(widget):
-
-    widget.bind("<Down>", tabRight)
-    widget.bind("<Up>", tabLeft)
-
-    widget.bind("<Right>", tabRight)
-    widget.bind("<Left>", tabLeft)
-
+    pass
 
 def tabRight(event):
-    if boxRoot:
-        boxRoot.event_generate("<Tab>")
-
+    pass
 
 def tabLeft(event):
-    if boxRoot:
-        boxRoot.event_generate("<Shift-Tab>")
+    pass

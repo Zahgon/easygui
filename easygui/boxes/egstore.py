@@ -12,9 +12,7 @@ import pickle
 import datetime
 
 def read_or_create_settings(file_name):
-    settings = Settings(file_name)
-    settings.restore()
-    return settings
+    pass
 
 class EgStore(object):
     """
@@ -56,16 +54,10 @@ class EgStore(object):
 
         :param filename: the file that backs this store for saving and loading
         """
-
         self.filename = filename
 
     def restore(self):
-        try:
-            self._restore()
-        except IOError as e:
-            if e.errno != errno.ENOENT:
-                raise
-
+        pass
 
     def _restore(self):
         """
@@ -88,30 +80,17 @@ class EgStore(object):
         Where possible, the attributes will have values recovered
         from the pickled object.
         """
-        with open(self.filename, 'rb') as f:
-            store = pickle.load(f)
-
-        for key, value in store.__dict__.items():
-            self.__dict__[key] = value
-
-        self.last_time_restored = datetime.datetime.now()
-
+        pass
 
     def store(self):
         """Save this store to a pickle file.
         All directories in :attr:`filename` must already exist.
         """
-
-        with open(self.filename, 'wb') as f:
-            self.last_time_stored = datetime.datetime.now()
-            pickle.dump(self, f)
-
+        pass
 
     def kill(self):
         """Delete this store's file if it exists."""
-
-        if os.path.isfile(self.filename):
-            os.remove(self.filename)
+        pass
 
     def __getstate__(self):
         """ All attributes will be pickled """
@@ -128,7 +107,7 @@ class EgStore(object):
         """"Format this store as "key : value" pairs, one per line."""
         stored_values = self.__dict__
         lines = []
-        width = max(len(key) for key in stored_values)
+        width = max((len(key) for key in stored_values))
         for key in sorted(stored_values.keys()):
             value = stored_values[key]
             if isinstance(value, datetime.datetime):
@@ -139,7 +118,7 @@ class EgStore(object):
     def __repr__(self):
         return '{0}({1!r})'.format(self.__class__.__name__, self.filename)
 
-
 class Settings(EgStore):
+
     def __init__(self, filename):
         self.filename = filename

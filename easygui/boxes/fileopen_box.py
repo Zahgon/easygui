@@ -1,13 +1,5 @@
 from __future__ import print_function
-"""
-
-.. moduleauthor:: easygui developers and Stephen Raymond Ferg
-.. default-domain:: py
-.. highlight:: python
-
-Version |release|
-"""
-
+'\n\n.. moduleauthor:: easygui developers and Stephen Raymond Ferg\n.. default-domain:: py\n.. highlight:: python\n\nVersion |release|\n'
 import os
 try:
     from . import utils as ut
@@ -15,15 +7,7 @@ try:
 except (SystemError, ValueError, ImportError):
     import utils as ut
     import fileboxsetup as fbs
-
 tk = ut.tk
-
-
-
-# -------------------------------------------------------------------
-# fileopenbox
-# -------------------------------------------------------------------
-
 
 def fileopenbox(msg=None, title=None, default='*', filetypes=None, multiple=False):
     """
@@ -82,49 +66,8 @@ def fileopenbox(msg=None, title=None, default='*', filetypes=None, multiple=Fals
     :param bool multiple: If true, more than one file can be selected
     :return: the name of a file, or None if user chose to cancel
     """
-    localRoot = tk.Tk()
-    localRoot.withdraw()
-    localRoot.attributes("-topmost", True)
-
-    initialbase, initialfile, initialdir, filetypes = fbs.fileboxSetup(
-        default, filetypes)
-
-    # ------------------------------------------------------------
-    # if initialfile contains no wildcards; we don't want an
-    # initial file. It won't be used anyway.
-    # Also: if initialbase is simply "*", we don't want an
-    # initialfile; it is not doing any useful work.
-    # ------------------------------------------------------------
-    if (initialfile.find("*") < 0) and (initialfile.find("?") < 0):
-        initialfile = None
-    elif initialbase == "*":
-        initialfile = None
-
-    func = ut.tk_FileDialog.askopenfilenames if multiple else ut.tk_FileDialog.askopenfilename
-    ret_val = func(parent=localRoot,
-                   title=ut.getFileDialogTitle(msg, title),
-                   initialdir=initialdir, initialfile=initialfile,
-                   filetypes=filetypes
-                   )
-    if not ret_val or ret_val == '':
-        localRoot.destroy()
-        return None
-    if multiple:
-        f = [os.path.normpath(x) for x in localRoot.tk.splitlist(ret_val)]
-    else:
-        try:
-            f = os.path.normpath(ret_val)
-        except AttributeError as e:
-            print("ret_val is {}".format(ret_val))
-            raise e
-    localRoot.destroy()
-
-    if not f:
-        return None
-    return f
-
-
+    pass
 if __name__ == '__main__':
-    print("Hello from file open box")
-    ret_val = fileopenbox("Please select a file", "My File Open dialog")
-    print("Return value is:{}".format(ret_val))
+    print('Hello from file open box')
+    ret_val = fileopenbox('Please select a file', 'My File Open dialog')
+    print('Return value is:{}'.format(ret_val))

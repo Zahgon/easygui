@@ -7,26 +7,17 @@
 Version |release|
 """
 from easygui.boxes.utils import mouse_click_handlers
-
 try:
     from . import global_state
 except:
     import global_state
-
 try:
-    import tkinter as tk  # python 3
+    import tkinter as tk
 except:
-    import Tkinter as tk  # python 2
+    import Tkinter as tk
 
-# -----------------------------------------------------------------------
-# multpasswordbox
-# -----------------------------------------------------------------------
-
-
-def multpasswordbox(msg="Fill in values for the fields.",
-                    title=" ", fields=tuple(), values=tuple(),
-                    callback=None, run=True):
-    r"""
+def multpasswordbox(msg='Fill in values for the fields.', title=' ', fields=tuple(), values=tuple(), callback=None, run=True):
+    """
     Same interface as multenterbox.  But in multpassword box,
     the last of the fields is assumed to be a password, and
     is masked with asterisks.
@@ -54,7 +45,7 @@ def multpasswordbox(msg="Fill in values for the fields.",
             errmsg = ""
             for i in range(len(fieldNames)):
                 if fieldValues[i].strip() == "":
-                    errmsg = errmsg + ('"%s" is a required field.\n\n' %
+                    errmsg = errmsg + ('"%s" is a required field.\\n\\n' %
                      fieldNames[i])
                 if errmsg == "": break # no problems found
             fieldValues = multpasswordbox(errmsg, title,
@@ -63,32 +54,10 @@ def multpasswordbox(msg="Fill in values for the fields.",
         print("Reply was: %s" % str(fieldValues))
 
     """
-    if run:
-        mb = MultiBox(msg, title, fields, values, mask_last=True,
-                      callback=callback)
+    pass
 
-        reply = mb.run()
-
-        return reply
-
-    else:
-
-        mb = MultiBox(msg, title, fields, values, mask_last=True,
-                      callback=callback)
-
-        return mb
-
-
-# -------------------------------------------------------------------
-# multenterbox
-# -------------------------------------------------------------------
-# TODO RL: Should defaults be list constructors.
-# i think after multiple calls, the value is retained.
-# TODO RL: Rename/alias to multienterbox?
-# default should be None and then in the logic create an empty liglobal_state.
-def multenterbox(msg="Fill in values for the fields.", title=" ",
-                 fields=[], values=[], callback=None, run=True):
-    r"""
+def multenterbox(msg='Fill in values for the fields.', title=' ', fields=[], values=[], callback=None, run=True):
+    """
     Show screen with multiple data entry fields.
 
     If there are fewer values than names, the list of values is padded with
@@ -116,7 +85,7 @@ def multenterbox(msg="Fill in values for the fields.", title=" ",
             errmsg = ""
             for i in range(len(fieldNames)):
                 if fieldValues[i].strip() == "":
-                    errmsg += ('"%s" is a required field.\n\n' % fieldNames[i])
+                    errmsg += ('"%s" is a required field.\\n\\n' % fieldNames[i])
             if errmsg == "":
                 break # no problems found
             fieldValues = multenterbox(errmsg, title, fieldNames, fieldValues)
@@ -129,19 +98,9 @@ def multenterbox(msg="Fill in values for the fields.", title=" ",
     :param list values: a list of field values
     :return: String
     """
-    if run:
-        mb = MultiBox(msg, title, fields, values, mask_last=False,
-                      callback=callback)
-        reply = mb.run()
-        return reply
-    else:
-        mb = MultiBox(msg, title, fields, values, mask_last=False,
-                      callback=callback)
-        return mb
-
+    pass
 
 class MultiBox(object):
-
     """ Show multiple data entry fields
 
     This object does a number of things:
@@ -178,81 +137,40 @@ class MultiBox(object):
         self
             The MultiBox object
         """
-
         self.callback = callback
-
         self.fields, self.values = self.check_fields(fields, values)
-
-        self.ui = GUItk(msg, title, self.fields, self.values,
-                        mask_last, self.callback_ui)
+        self.ui = GUItk(msg, title, self.fields, self.values, mask_last, self.callback_ui)
 
     def run(self):
         """ Start the ui """
-        self.ui.run()
-        self.ui = None
-        return self.values
+        pass
 
     def stop(self):
         """ Stop the ui """
-        self.ui.stop()
+        pass
 
     def callback_ui(self, ui, command, values):
         """ This method is executed when ok, cancel, or x is pressed in the ui.
         """
-        if command == 'update':  # OK was pressed
-            self.values = values
-            if self.callback:
-                # If a callback was set, call main process
-                self.callback(self)
-            else:
-                self.stop()
-        elif command == 'x':
-            self.stop()
-            self.values = None
-        elif command == 'cancel':
-            self.stop()
-            self.values = None
-
-    # methods to change properties --------------
+        pass
 
     @property
     def msg(self):
         """Text in msg Area"""
-        return self._msg
+        pass
 
     @msg.setter
     def msg(self, msg):
-        self.ui.set_msg(msg)
+        pass
 
     @msg.deleter
     def msg(self):
-        self._msg = ""
-        self.ui.set_msg(self._msg)
-
-    # Methods to validate what will be sent to ui ---------
+        pass
 
     def check_fields(self, fields, values):
-        if len(fields) == 0:
-            return None
-
-        fields = list(fields[:])  # convert possible tuples to a list
-        values = list(values[:])  # convert possible tuples to a list
-
-        # TODO RL: The following seems incorrect when values>fields.  Replace
-        # below with zip?
-        if len(values) == len(fields):
-            pass
-        elif len(values) > len(fields):
-            fields = fields[0:len(values)]
-        else:
-            while len(values) < len(fields):
-                values.append("")
-
-        return fields, values
-
+        pass
 
 class GUItk(object):
-
     """ This object contains the tk root object.
         It draws the window, waits for events and communicates them
         to MultiBox, together with the entered values.
@@ -263,245 +181,84 @@ class GUItk(object):
     """
 
     def __init__(self, msg, title, fields, values, mask_last, callback):
-
         self.callback = callback
-
         self.boxRoot = tk.Tk()
-
         self.create_root(title)
-
-        self.set_pos(global_state.window_position)  # GLOBAL POSITION
-
+        self.set_pos(global_state.window_position)
         self.create_msg_widget(msg)
-
         self.create_entryWidgets(fields, values, mask_last)
-
         self.create_buttons()
-
-        self.entryWidgets[0].focus_force()  # put the focus on the entryWidget
-
-    # Run and stop methods ---------------------------------------
+        self.entryWidgets[0].focus_force()
 
     def run(self):
-        self.boxRoot.mainloop()  # run it!
-        self.boxRoot.destroy()   # Close the window
+        pass
 
     def stop(self):
-        # Get the current position before quitting
-        self.get_pos()
-
-        self.boxRoot.quit()
+        pass
 
     def x_pressed(self):
-        self.callback(self, command='x', values=self.get_values())
+        pass
 
     def cancel_pressed(self, event):
-        self.callback(self, command='cancel', values=self.get_values())
+        pass
 
     def ok_pressed(self, event):
-        self.callback(self, command='update', values=self.get_values())
-
-    # Methods to change content ---------------------------------------
+        pass
 
     def set_msg(self, msg):
-        self.messageWidget.configure(text=msg)
-        self.entryWidgets[0].focus_force()  # put the focus on the entryWidget
+        pass
 
     def set_pos(self, pos):
-        self.boxRoot.geometry(pos)
+        pass
 
     def get_pos(self):
-        # The geometry() method sets a size for the window and positions it on
-        # the screen. The first two parameters are width and height of
-        # the window. The last two parameters are x and y screen coordinates.
-        # geometry("250x150+300+300")
-        geom = self.boxRoot.geometry()  # "628x672+300+200"
-        global_state.window_position = '+' + geom.split('+', 1)[1]
+        pass
 
     def get_values(self):
-        values = []
-        for entryWidget in self.entryWidgets:
-            values.append(entryWidget.get())
-        return values
-
-    # Initial configuration methods ---------------------------------------
-    # These ones are just called once, at setting.
+        pass
 
     def create_root(self, title):
-
-        self.boxRoot.protocol('WM_DELETE_WINDOW', self.x_pressed)
-        self.boxRoot.title(title)
-        self.boxRoot.iconname('Dialog')
-        self.boxRoot.bind("<Escape>", self.cancel_pressed)
-        self.boxRoot.attributes("-topmost", True)  # Put the dialog box in focus.
+        pass
 
     def create_msg_widget(self, msg):
-        # -------------------- the msg widget ----------------------------
-        self.messageWidget = tk.Message(self.boxRoot, width="4.5i", text=msg)
-        self.messageWidget.configure(
-            font=(global_state.PROPORTIONAL_FONT_FAMILY, global_state.PROPORTIONAL_FONT_SIZE))
-        self.messageWidget.pack(
-            side=tk.TOP, expand=1, fill=tk.BOTH, padx='3m', pady='3m')
+        pass
 
     def create_entryWidgets(self, fields, values, mask_last):
-
-        self.entryWidgets = []
-
-        lastWidgetIndex = len(fields) - 1
-
-        for widgetIndex in range(len(fields)):
-            name = fields[widgetIndex]
-            value = values[widgetIndex]
-            entryFrame = tk.Frame(master=self.boxRoot)
-            entryFrame.pack(side=tk.TOP, fill=tk.BOTH)
-
-            # --------- entryWidget -------------------------------------------
-            labelWidget = tk.Label(entryFrame, text=name)
-            labelWidget.pack(side=tk.LEFT)
-
-            entryWidget = tk.Entry(entryFrame, width=40, highlightthickness=2)
-            self.entryWidgets.append(entryWidget)
-            entryWidget.configure(
-                font=(global_state.PROPORTIONAL_FONT_FAMILY, global_state.TEXT_ENTRY_FONT_SIZE))
-            entryWidget.pack(side=tk.RIGHT, padx="3m")
-
-            self.bindArrows(entryWidget)
-
-            entryWidget.bind("<Return>", self.ok_pressed)
-            entryWidget.bind("<Escape>", self.cancel_pressed)
-
-            # for the last entryWidget, if this is a multpasswordbox,
-            # show the contents as just asterisks
-            if widgetIndex == lastWidgetIndex:
-                if mask_last:
-                    self.entryWidgets[widgetIndex].configure(show="*")
-
-            # put text into the entryWidget
-            if value is None:
-                value = ''
-            self.entryWidgets[widgetIndex].insert(
-                0, '{}'.format(value))
+        pass
 
     def create_buttons(self):
-        self.buttonsFrame = tk.Frame(master=self.boxRoot)
-        self.buttonsFrame.pack(side=tk.BOTTOM)
-
-        self.create_cancel_button()
-        self.create_ok_button()
+        pass
 
     def create_ok_button(self):
-
-        okButton = tk.Button(self.buttonsFrame, takefocus=1, text="OK")
-        self.bindArrows(okButton)
-        okButton.pack(expand=1, side=tk.LEFT, padx='3m', pady='3m',
-                      ipadx='2m', ipady='1m')
-
-        # for the commandButton, bind activation events to the activation event
-        # handler
-        commandButton = okButton
-        handler = self.ok_pressed
-        for selectionEvent in global_state.STANDARD_SELECTION_EVENTS:
-            commandButton.bind("<%s>" % selectionEvent, handler)
-
-        mouse_handlers = mouse_click_handlers(self.ok_pressed)
-        for selectionEvent in global_state.STANDARD_SELECTION_EVENTS_MOUSE:
-            commandButton.bind("<%s>" % selectionEvent, mouse_handlers[selectionEvent])
-
+        pass
 
     def create_cancel_button(self):
-
-        cancelButton = tk.Button(self.buttonsFrame, takefocus=1, text="Cancel")
-        self.bindArrows(cancelButton)
-        cancelButton.pack(expand=1, side=tk.LEFT, padx='3m', pady='3m',
-                          ipadx='2m', ipady='1m')
-
-        # for the commandButton, bind activation events to the activation event
-        # handler
-        commandButton = cancelButton
-        handler = self.cancel_pressed
-        for selectionEvent in global_state.STANDARD_SELECTION_EVENTS:
-            commandButton.bind("<%s>" % selectionEvent, handler)
-
-        mouse_handlers = mouse_click_handlers(self.cancel_pressed)
-        for selectionEvent in global_state.STANDARD_SELECTION_EVENTS_MOUSE:
-            commandButton.bind("<%s>" % selectionEvent, mouse_handlers[selectionEvent])
-
+        pass
 
     def bindArrows(self, widget):
-
-        widget.bind("<Down>", self.tabRight)
-        widget.bind("<Up>", self.tabLeft)
-
-        widget.bind("<Right>", self.tabRight)
-        widget.bind("<Left>", self.tabLeft)
+        pass
 
     def tabRight(self, event):
-        self.boxRoot.event_generate("<Tab>")
+        pass
 
     def tabLeft(self, event):
-        self.boxRoot.event_generate("<Shift-Tab>")
-
+        pass
 
 def demo1():
-    msg = "Enter your personal information"
-    title = "Credit Card Application"
-    fieldNames = ["Name", "Street Address", "City", "State", "ZipCode"]
-    fieldValues = []  # we start with blanks for the values
+    pass
 
-    # make sure that none of the fields was left blank
-    while True:
-
-        fieldValues = multenterbox(msg, title, fieldNames, fieldValues)
-        cancelled = fieldValues is None
-        errors = []
-        if cancelled:
-            pass
-        else:  # check for errors
-            for name, value in zip(fieldNames, fieldValues):
-                if value.strip() == "":
-                    errors.append('"{}" is a required field.'.format(name))
-
-        all_ok = not errors
-
-        if cancelled or all_ok:
-            break  # no problems found
-
-        msg = "\n".join(errors)
-
-    print("Reply was: {}".format(fieldValues))
-
-
-class Demo2():
+class Demo2:
 
     def __init__(self):
-        msg = "Without flicker. Enter your personal information"
-        title = "Credit Card Application"
-        fieldNames = ["Name", "Street Address", "City", "State", "ZipCode"]
-        fieldValues = []  # we start with blanks for the values
-
-        fieldValues = multenterbox(msg, title, fieldNames, fieldValues,
-                                   callback=self.check_for_blank_fields)
-        print("Reply was: {}".format(fieldValues))
+        msg = 'Without flicker. Enter your personal information'
+        title = 'Credit Card Application'
+        fieldNames = ['Name', 'Street Address', 'City', 'State', 'ZipCode']
+        fieldValues = []
+        fieldValues = multenterbox(msg, title, fieldNames, fieldValues, callback=self.check_for_blank_fields)
+        print('Reply was: {}'.format(fieldValues))
 
     def check_for_blank_fields(self, box):
-        # make sure that none of the fields was left blank
-        cancelled = box.values is None
-        errors = []
-        if cancelled:
-            pass
-        else:  # check for errors
-            for name, value in zip(box.fields, box.values):
-                if value.strip() == "":
-                    errors.append('"{}" is a required field.'.format(name))
-
-        all_ok = not errors
-
-        if cancelled or all_ok:
-            box.stop()  # no problems found
-
-        box.msg = "\n".join(errors)
-
-
+        pass
 if __name__ == '__main__':
     demo1()
     Demo2()
